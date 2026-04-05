@@ -13,11 +13,17 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.5.2",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.0.0",
     "nodemon": "^3.1.11",
-    "prettier": "3.7.4"
+    "prettier": "3.7.4",
+    "typescript": "^6.0.2"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

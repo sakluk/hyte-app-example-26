@@ -1,12 +1,13 @@
+import type {Request, Response} from 'express';
 import items from '../models/item-model.js';
 
-const getItems = (req, res) => {
+const getItems = (req: Request, res: Response) => {
   res.json(items);
 };
 
-const getItemById = (req, res) => {
+const getItemById = (req: Request, res: Response) => {
   console.log('getting item id:', req.params.id);
-  const itemFound = items.find((item) => item.id == req.params.id);
+  const itemFound = items.find((item) => item.id == Number(req.params.id));
   if (itemFound) {
     res.json(itemFound);
   } else {
@@ -14,9 +15,9 @@ const getItemById = (req, res) => {
   }
 };
 
-const putItemById = (req, res) => {
+const putItemById = (req: Request, res: Response) => {
   console.log('updating item id:', req.params.id);
-  const itemIndex = items.findIndex((item) => item.id == req.params.id);
+  const itemIndex = items.findIndex((item) => item.id == Number(req.params.id));
   if (itemIndex !== -1) {
     items[itemIndex] = {...items[itemIndex], ...req.body};
     res.json({message: 'item updated', item: items[itemIndex]});
@@ -25,9 +26,9 @@ const putItemById = (req, res) => {
   }
 };
 
-const deleteItemById = (req, res) => {
+const deleteItemById = (req: Request, res: Response) => {
   console.log('deleting item id:', req.params.id);
-  const itemIndex = items.findIndex((item) => item.id == req.params.id);
+  const itemIndex = items.findIndex((item) => item.id == Number(req.params.id));
   if (itemIndex !== -1) {
     items.splice(itemIndex, 1);
     res.json({message: 'item deleted'});
@@ -36,7 +37,7 @@ const deleteItemById = (req, res) => {
   }
 };
 
-const postNewItem = (req, res) => {
+const postNewItem = (req: Request, res: Response) => {
   //console.log('add item request body', req.body);
   // name is mandatory property for new item
   if (!req.body.name) {
