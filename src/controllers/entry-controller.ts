@@ -1,4 +1,4 @@
-import type {Response} from 'express';
+import type {Request, Response} from 'express';
 import {
   //listAllEntries,
   findEntryById,
@@ -6,9 +6,8 @@ import {
   listAllEntriesByUserId,
   removeEntryById,
 } from '../models/entry-model.js';
-import type {AuthenticatedRequest} from '../types/index.js';
 
-const getEntries = async (req: AuthenticatedRequest, res: Response) => {
+const getEntries = async (req: Request, res: Response) => {
   // haetaan kaikkien käyttäjien merkinnät
   //const result = await listAllEntries();
   // haetaan kirjautuneen (token) käyttäjän omat merkinnät
@@ -16,7 +15,7 @@ const getEntries = async (req: AuthenticatedRequest, res: Response) => {
   res.json(result);
 };
 
-const getEntryById = async (req: AuthenticatedRequest, res: Response) => {
+const getEntryById = async (req: Request, res: Response) => {
   const entry = await findEntryById(Number(req.params.id));
   if (entry) {
     res.json(entry);
@@ -25,7 +24,7 @@ const getEntryById = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const postEntry = async (req: AuthenticatedRequest, res: Response) => {
+const postEntry = async (req: Request, res: Response) => {
 
   const {entry_date, mood, weight, sleep_hours, notes} = req.body;
   // user property (& id) is added to req by authentication middleware
@@ -46,12 +45,12 @@ const postEntry = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const putEntry = (req: AuthenticatedRequest, res: Response) => {
+const putEntry = (req: Request, res: Response) => {
   // placeholder for future implementation
   res.sendStatus(200);
 };
 
-const deleteEntry = async (req: AuthenticatedRequest, res: Response) => {
+const deleteEntry = async (req: Request, res: Response) => {
   const affectedRows = await removeEntryById(Number(req.params.id), req.user!.user_id);
   if (affectedRows > 0) {
     res.json({message: 'entry deleted'});

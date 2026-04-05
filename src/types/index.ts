@@ -1,5 +1,3 @@
-import type {Request} from 'express';
-
 export interface User {
   user_id: number;
   username: string;
@@ -23,8 +21,4 @@ export interface DiaryEntry {
 export interface CustomError extends Error {
   status?: number;
   errors?: {field: string; message: string}[];
-}
-
-export interface AuthenticatedRequest extends Request {
-  user?: User;
 }

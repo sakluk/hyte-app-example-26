@@ -6,7 +6,6 @@ import {
   findUserByUsername,
   listAllUsers,
 } from '../models/user-model.js';
-import type {AuthenticatedRequest} from '../types/index.js';
 
 // TODO: lisää tietokantafunktiot user modeliin
 // ja käytä niitä täällä
@@ -65,7 +64,7 @@ const postLogin = async (req: Request, res: Response) => {
 };
 
 // Get user information stored inside token
-const getMe = (req: AuthenticatedRequest, res: Response) => {
+const getMe = (req: Request, res: Response) => {
   res.json(req.user);
 };
 
