@@ -14,6 +14,9 @@ npm run dev
 # Run in production mode
 npm start
 
+# Type-check without emitting output
+npx tsc --noEmit
+
 # Lint
 npx eslint .
 
@@ -40,20 +43,24 @@ Initialize the MySQL database using [db/health-diary-db.sql](db/health-diary-db.
 
 ## Architecture
 
-This is an Express.js REST API (ES modules, Node.js) backed by MySQL. The layered structure is:
+This is an Express.js REST API (TypeScript, ES modules, Node.js) backed by MySQL. The layered structure is:
 
 **Route → Controller → Model**
 
 - **Routes** ([src/routes/](src/routes/)): Define endpoints, apply `express-validator` validation chains, and call `validationErrorHandler` before the controller.
 - **Controllers** ([src/controllers/](src/controllers/)): Handle request/response logic, call model functions, do password hashing (bcryptjs) and JWT signing/verification.
-- **Models** ([src/models/](src/models/)): Execute SQL queries via the shared `promisePool` from [src/utils/database.js](src/utils/database.js).
+- **Models** ([src/models/](src/models/)): Execute SQL queries via the shared `promisePool` from [src/utils/database.ts](src/utils/database.ts). Use `RowDataPacket[]` for SELECT results and `ResultSetHeader` for INSERT/DELETE/UPDATE.
 
 **Key middleware** ([src/middlewares/](src/middlewares/)):
 - `authenticateToken` — verifies JWT from `Authorization: Bearer <token>` header; attaches decoded payload to `req.user`.
 - `validationErrorHandler` — must be placed after `express-validator` chains in the route definition; formats errors and passes them to the error handler.
-- `errorHandler` / `notFoundHandler` — registered last in [src/index.js](src/index.js); `errorHandler` reads `err.status`, `err.message`, and `err.errors`.
+- `errorHandler` / `notFoundHandler` — registered last in [src/index.ts](src/index.ts); `errorHandler` reads `err.status`, `err.message`, and `err.errors`.
 
-**Database**: MySQL connection pool is a singleton exported from `src/utils/database.js`. All model functions use `promisePool.query()` or `promisePool.execute()` (use `execute` for parameterized queries to prevent SQL injection).
+**TypeScript types** ([src/types/](src/types/)):
+- [src/types/index.ts](src/types/index.ts) — shared domain interfaces: `User`, `DiaryEntry`, `CustomError`.
+- [src/types/express.d.ts](src/types/express.d.ts) — global Express namespace augmentation adding `user?: User` to `Request`, so all controllers use standard `Request` from Express.
+
+**Database**: MySQL connection pool is a singleton exported from `src/utils/database.ts`. All model functions use `promisePool.query()` or `promisePool.execute()` (use `execute` for parameterized queries to prevent SQL injection).
 
 **Auth flow**: `POST /api/users/login` returns a JWT; protected routes require the token. `GET /api/users/me` returns the payload decoded from the token (no DB hit).
 
